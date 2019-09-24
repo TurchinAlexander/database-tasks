@@ -1,11 +1,11 @@
 use AdventureWorks2012
 go
 
--- Task 4. Part1
+-- Task 4. Part 2
 -- Variant 2
 
-if exists(select * from sys.views where name = 'show_product_data')
-	drop view [Production].show_product_data
+if exists(select * from sys.views where name = 'vShowProductData')
+	drop view [Production].vShowProductData
 go
 
 if exists(SELECT * FROM sys.objects WHERE [name] = N'trg_insert_view')
@@ -24,7 +24,7 @@ go
 	a) Create view
 */
 
-create view [Production].show_product_data 
+create view [Production].vShowProductData 
 with encryption, schemabinding
 as
 select
@@ -51,18 +51,18 @@ inner join
 			p.ProductID = pi.ProductID
 go
 
---select * from Production.show_product_data
+--select * from Production.vShowProductData
 
 create unique clustered index
 	ucidx_product_category_subcategory_id
-on	[Production].show_product_data(LocationID, ProductID)
+on	[Production].vShowProductData(LocationID, ProductID)
 go
+
 /*
 	b) Create triggers
 */
-
 create trigger trg_insert_view
-on [Production].[show_product_data]
+on [Production].[vShowProductData]
 instead of insert
 as 
 declare
@@ -119,7 +119,7 @@ end
 go
 
 create trigger trg_update_view
-on [Production].[show_product_data]
+on [Production].[vShowProductData]
 instead of update
 as
 declare
@@ -129,7 +129,7 @@ begin
 		l
 	set
 		l.Availability = i.Availability
-		--,l.Name = i.LocationName
+		,l.Name = i.LocationName
 		,l.CostRate = i.CostRate
 		,l.ModifiedDate = i.ModifiedDate
 	from
@@ -139,23 +139,17 @@ begin
 			on
 				pp.LocationID = l.LocationID
 	inner join
-		[Production].[Product] p
-			on
-				p.ProductID = pp.ProductID
-	inner join
 		inserted i
 			on
-				i.LocationID = l.LocationID
+				i.LocationID = pp.LocationID
 			and
-				i.ProductID = p.ProductID
+				i.ProductID = pp.ProductID
 
 	update
 		pp
 	set
 		pp.Bin = i.Bin
-		--,pp.LocationID = i.LocationID
 		,pp.ModifiedDate = i.ModifiedDate
-		--,pp.ProductID = i.LocationID
 		,pp.Quantity  = i.Quantity
 		,pp.rowguid = i.rowguid
 		,pp.Shelf = i.Shelf
@@ -172,7 +166,7 @@ end
 go
 
 create trigger trg_delete_view
-on [Production].[show_product_data]
+on [Production].[vShowProductData]
 instead of delete
 as 
 declare
@@ -214,11 +208,11 @@ go
 	c) INSERT, UPDATE and DELETE in the view
 */
 
-select * from [Production].[Location]			-- 14
-select * from [Production].[ProductInventory]	-- 1069
-select * from [Production].[Product]			-- 504
+select * from [Production].[Location]		
+select * from [Production].[ProductInventory]
+select * from [Production].[Product]
 
-insert into [Production].show_product_data (
+insert into [Production].vShowProductData (
 	Availability
 	,rowguid
 	,LocationName
@@ -240,17 +234,17 @@ insert into [Production].show_product_data (
 	,'Adjustable Race'
 )
 
-update [Production].show_product_data
+update [Production].vShowProductData
 set Availability = 99
 where
 	Name = 'Adjustable Race'
 and
 	LocationName = 'test1'
 
-delete [Production].show_product_data
+delete [Production].vShowProductData
 where
 	Name = 'Adjustable Race'
 and
 	LocationName = 'test1'
 
-select * from [Production].show_product_data
+select * from [Production].vShowProductData
