@@ -45,7 +45,6 @@ begin
 	
 	) as PivotTable
 '
-	print @sql
 
 	exec sp_executesql @sql
 end
