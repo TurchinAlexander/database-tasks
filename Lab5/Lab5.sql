@@ -42,8 +42,6 @@ begin
 		edh.EndDate is null
 	and
 		edh.DepartmentID = @department_id
-	group by
-		edh.DepartmentID
 
 	return @employee_count
 end
@@ -87,8 +85,7 @@ go
 
 select
 	d.DepartmentID,
-	[HumanResources].EmployeeCount(d.DepartmentID) as EmployeesInDepartment,
-	sum([HumanResources].EmployeeCount(d.DepartmentID)) over ()
+	[HumanResources].EmployeeCount(d.DepartmentID) as EmployeesInDepartment
 from
 	[HumanResources].[Department] d
 order by 
