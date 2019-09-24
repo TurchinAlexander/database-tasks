@@ -1,6 +1,9 @@
 use AdventureWorks2012
 go
 
+-- Task 7
+-- Variant 2
+
 if OBJECT_ID('dbo.ParseXML') is not null
 begin
 	drop procedure [dbo].[ParseXML]

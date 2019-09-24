@@ -1,6 +1,9 @@
 use AdventureWorks2012
 go
 
+-- Task 6
+-- Variant 2
+
 if object_id('dbo.SubCategoriesByColor') is not null
 begin
 	drop procedure dbo.SubCategoriesByColor

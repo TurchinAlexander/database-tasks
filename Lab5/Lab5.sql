@@ -1,6 +1,9 @@
 use AdventureWorks2012
 go
 
+-- Task 5
+-- Variant 2
+
 /*
 	a) Create a function to take ID of the department and returns count of the employees in them.
 */
