@@ -1,6 +1,9 @@
 use AdventureWorks2012
 go
 
+-- Task 3. Part 1
+-- Variant 2
+
 /*
 	a) Add new column to [dbo].[PersonPhone]
 */
@@ -69,7 +72,10 @@ where
 */
 
 alter table [dbo].[PersonPhone]
-	drop constraint not_words_in_PhoneNumber
+	drop constraint 
+		not_words_in_PhoneNumber
+		,default_PhoneNumberTypeID
+		,U_ID
 
 /*
 	d) Drop table [dbo].[PersonTable]

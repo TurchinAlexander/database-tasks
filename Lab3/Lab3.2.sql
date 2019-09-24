@@ -4,48 +4,40 @@ go
 -- Task 3. Part 2
 -- Variant 2
 
-/*
-	a) Create [dbo].[PersonPhone]
-*/
-
 if object_id('dbo.PersonPhone', 'U') is not null
 	drop table [dbo].[PersonPhone]
+
+if object_id('tempdb..#PersonPhone', 'U') is not null
+	drop table #PersonPhone
+
 
 create table [dbo].[PersonPhone] (
 	BusinessEntityID	[int]			not null
 	,PhoneNumber		[nvarchar](25)	not null
 	,PhoneNumberTypeID	[int]			not null
 	,ModifiedDate		[datetime]		not null
-	,JobTitle			[nvarchar](50)	null
-	,BirthDate			[date]			null
-	,HireDate			[date]			null
-	
-	,HireAge as datediff(year, BirthDate, HireDate)
 )
 go
 
 alter table [dbo].[PersonPhone]
 	add 
-		ID bigint identity(2, 2)
+		ID bigint identity(2, 2),
+		constraint U_ID unique(ID)
+go
 
 alter table [dbo].[PersonPhone]
 	add constraint not_words_in_PhoneNumber check (PhoneNumber not like '%[a-z]%');
+go
 
 alter table [dbo].[PersonPhone]
 	add constraint default_PhoneNumberTypeID
 	default 1 for PhoneNumberTypeID
+go
 
-insert into	[dbo].[PersonPhone] (
-	BusinessEntityID
-	,PhoneNumber
-	,PhoneNumberTypeID
-	,ModifiedDate
-)
+insert into	
+	[dbo].[PersonPhone]
 select
-	pp.BusinessEntityID
-	,pp.PhoneNumber
-	,pp.PhoneNumberTypeID
-	,pp.ModifiedDate
+	pp.*
 from
 	[HumanResources].[Employee] e
 inner join
@@ -60,16 +52,32 @@ where
 	edh.StartDate = e.HireDate
 and
 	pp.PhoneNumber not like '%(%)%'
+go
 
 alter table [dbo].[PersonPhone]
 	alter column PhoneNumber [nvarchar](25) null
 go
 
+
+
+/*
+	a) Create [dbo].[PersonPhone]
+*/
+
+alter table [dbo].[PersonPhone]
+	add
+		JobTitle			[nvarchar](50)	null
+		,BirthDate			[date]			null
+		,HireDate			[date]			null
+	
+		,HireAge as datediff(year, BirthDate, HireDate)
+
+go
+
 /*
 	b) Create a temporary table
 */
-if object_id('tempdb..#PersonPhone', 'U') is not null
-	drop table #PersonPhone
+
 
 create table #PersonPhone (
 	BusinessEntityID	[int]			primary key
