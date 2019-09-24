@@ -1,11 +1,16 @@
 use AdventureWorks2012
 go
 
--- Task 2. Part 1
+-- Task 2. Part 2
 -- Variant 2
 
+if OBJECT_ID('dbo.PersonPhone') is not null
+begin
+	drop table [dbo].[PersonPhone]
+end
+
 /*
-	Create table like [Person].[PersonPhone]
+	a) Create table like [Person].[PersonPhone]
 */
 create table [dbo].[PersonPhone] (
 	BusinessEntityID	[int]			not null
@@ -16,22 +21,23 @@ create table [dbo].[PersonPhone] (
 go
 
 /*
-	Add new column ID
+	b) Add new column ID
 */
 alter table [dbo].[PersonPhone]
 	add 
-		ID bigint identity(2, 2)
+		ID bigint identity(2, 2),
+		constraint U_ID unique(ID)
 go
 
 /*
-	Add constraint for words in PhoneNumber
+	c) Add constraint for words in PhoneNumber
 */
 alter table [dbo].[PersonPhone]
 	add constraint not_words_in_PhoneNumber check (PhoneNumber not like '%[a-z]%');
 go
 
 /*
-	Add constraint DEFAULT to PhoneNumberTypeID
+	d) Add constraint DEFAULT to PhoneNumberTypeID
 */
 alter table [dbo].[PersonPhone]
 	add constraint default_PhoneNumberTypeID
@@ -39,7 +45,7 @@ alter table [dbo].[PersonPhone]
 go
 
 /*
-	Fill the date from [Person] schema to [dbo].
+	e) Fill the date from [Person] schema to [dbo].
 */
 insert into	
 	[dbo].[PersonPhone]
@@ -62,7 +68,7 @@ and
 go
 
 /*
-	Alter column to take NULL values.
+	f) Alter column to take NULL values.
 */
 alter table [dbo].[PersonPhone]
 	alter column PhoneNumber [nvarchar](25) null

@@ -1,7 +1,7 @@
 use AdventureWorks2012
 go
 
--- Task 2. Part 1.
+-- Task 2. Part 1
 -- Variant 2
 
 /*
@@ -13,15 +13,19 @@ declare
 select
 	e.BusinessEntityID
 	,e.JobTitle
-	,edh.Department as [DepartmentName]
+	,d.Name as [DepartmentName]
 	,edh.StartDate
 	,edh.EndDate
 from
 	HumanResources.Employee e
 inner join
-	HumanResources.vEmployeeDepartmentHistory edh
+	HumanResources.EmployeeDepartmentHistory edh
 		on
 			edh.BusinessEntityID = e.BusinessEntityID
+inner join
+	HumanResources.Department d
+		on
+			d.DepartmentID = edh.DepartmentID
 where
 	e.JobTitle like '%' + @job_title + '%'
 
@@ -42,7 +46,7 @@ group by
 	e.BusinessEntityID
 	,e.JobTitle
 having
-	count(*) > 1
+	count(e.BusinessEntityID) > 1
 
 /*
 	Show max rate of each department
@@ -61,12 +65,12 @@ inner join
 	HumanResources.EmployeeDepartmentHistory edh
 		on
 			edh.BusinessEntityID = e.BusinessEntityID
-		and
-			edh.EndDate is null
 inner join
 	HumanResources.Department d
 	 on 
 		d.DepartmentID = edh.DepartmentID
+where
+	edh.EndDate is null
 group by
 	d.DepartmentID
 	,d.Name
