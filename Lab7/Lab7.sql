@@ -1,7 +1,12 @@
 use AdventureWorks2012
 go
 
-create procedure dbo.ParseXML(
+if OBJECT_ID('dbo.ParseXML') is not null
+begin
+	drop procedure [dbo].[ParseXML]
+end
+
+create procedure [dbo].[ParseXML](
 	@xml xml
 )
 as
