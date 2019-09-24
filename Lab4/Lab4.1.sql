@@ -35,6 +35,9 @@ declare
 	,@user		varchar(200)
 	,@sourceId	int
 begin
+	if not exists(select * from inserted) and not exists(select * from deleted)
+		return;
+
 	if exists(select * from inserted) and exists(select * from deleted)
 	begin
 		set @activity = 'UPDATE'
